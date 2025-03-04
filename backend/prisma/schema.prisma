@@ -13,12 +13,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id Int @id @default(autoincrement())
+  email String @unique
+  name String?
+  password String
+  todos Todo[]
+}
+
 model Todo {
   id Int @id @default(autoincrement())
   description String
   completed Boolean @default(false)
   date DateTime
   priority Priority
+  userId Int
+  user User @relation(fields: [userId], references: [id])
 }
 
 enum Priority {
