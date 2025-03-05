@@ -6,10 +6,9 @@ import * as bcrypt from 'bcrypt';
 export class UserService {
   constructor(private prisma: PrismaService) {}
   async create(createUserDto: Prisma.UserCreateInput) {
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(createUserDto.password, salt);
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
     createUserDto.password = hashedPassword;
-    this.prisma.user.create({ data: createUserDto });
+    await this.prisma.user.create({ data: createUserDto });
     delete createUserDto.password;
     return createUserDto;
   }

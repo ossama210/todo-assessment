@@ -6,9 +6,11 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { Prisma } from '@prisma/client';
+import { JwtAuthGuard } from 'src/auth/jwt.guard';
 
 @Controller('todo')
 export class TodoController {
@@ -20,6 +22,7 @@ export class TodoController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   findAll() {
     return this.todoService.findAll();
   }
