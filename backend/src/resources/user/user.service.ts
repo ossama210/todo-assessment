@@ -9,7 +9,9 @@ export class UserService {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(createUserDto.password, salt);
     createUserDto.password = hashedPassword;
-    return this.prisma.user.create({ data: createUserDto });
+    this.prisma.user.create({ data: createUserDto });
+    delete createUserDto.password;
+    return createUserDto;
   }
 
   findOne(id: number) {
