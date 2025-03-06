@@ -6,28 +6,38 @@ import { Prisma } from '@prisma/client';
 export class TodoService {
   constructor(private prisma: PrismaService) {}
 
-  create(createTodoDto: Prisma.TodoCreateInput) {
+  create(userId: number, createTodoDto: Prisma.TodoUncheckedCreateInput) {
     return this.prisma.todo.create({
-      data: createTodoDto,
+      data: { ...createTodoDto, userId },
     });
   }
 
-  findAll() {
-    return this.prisma.todo.findMany();
-  }
-
-  findOne(id: number) {
-    return this.prisma.todo.findUnique({ where: { id } });
+  findAll(userId: number) {
+    return this.prisma.todo.findMany({
+      where: { userId },
+      orderBy: [
+        {
+          date: 'desc',
+        },
+        {
+          priority: 'desc',
+        },
+      ],
+    });
   }
 
   update(
-    where: Prisma.TodoWhereUniqueInput,
+    userId: number,
+    todoId: number,
     updateTodoDto: Prisma.TodoUpdateInput,
   ) {
-    return this.prisma.todo.update({ where, data: updateTodoDto });
+    return this.prisma.todo.update({
+      where: { userId, id: todoId },
+      data: updateTodoDto,
+    });
   }
 
-  remove(id: number) {
-    return this.prisma.todo.delete({ where: { id } });
+  remove(id: number, userId: number) {
+    return this.prisma.todo.delete({ where: { id, userId } });
   }
 }
